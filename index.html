@@ -10,13 +10,25 @@
     <script type="text/javascript" charset="utf-8">
       var data;
 
+      // set the outlines of the working space.
+      // this gives us an inner working area of 700x700
       var margin = {top:50, right:50, bottom:50, left:50};
       var width = 800 - margin.left - margin.right,
           height = 800 - margin.top - margin.bottom;
 
+      // load the csv data w/ an http request.
+      // this requires the data being actually available via
+      // a web server, rather than just on file://
+      // but it mirrors what you'd probably want to do in production.
+      // it also sets up the right sort of abstraction for having
+      // one viewer and switching the data that's piped into it and
+      // having the graph re-load.
       d3.csv("/data/match-617956329.csv", function(d) {
         data = d;
 
+        // create the containing svg element, drawing on
+        // the height/width settings above.
+        // the transform moves us in by the margin amounts.
         var svg = d3.select("body").append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
@@ -25,16 +37,20 @@
 
         // not totally sure about the domain here. Looking at the example page,
         // http://www.datdota.com/match.php?q=617956329&p=wards
-        // it's certainly 0 based but not sure how far up it goes. 200 seems
-        // a little low but I'm not sure.
+        // 60-200 seems to work pretty well, although it's a little surprising.
         var x = d3.scale.linear()
                   .domain([60, 200])
                   .range([0, 700]);
 
+        // flip the y axis because d3's natural desire is to have (0,0)
+        // in the upper left corner, ala graphics applications.
+        // We want it in the lower left, so we invert the y scale.
         var y = d3.scale.linear()
                   .domain([60, 200])
                   .range([700, 0])
 
+        // create axis objects. This is just for debugging. In production
+        // we would probably remove these entirely.
         var xAxis = d3.svg.axis()
                       .scale(x)
                       .orient("bottom");
@@ -43,6 +59,7 @@
                       .scale(y)
                       .orient("left");
 
+        // put the axis objects into DOM
         svg.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + height + ")")
@@ -53,24 +70,42 @@
             .attr("transform", "translate(0,0)")
             .call(yAxis);
 
+        // abstract out the decision about which color something should be.
+        // this is important because we'll want to set the fill color to
+        // this color only for obs wards, otherwise we just set the stroke
+        // color.
         var color = function(w) {
           return w["Side"]=='Dire' ? 'red' : 'green';
         };
 
-
+        // add a minimap background.
         svg.append("image")
           .attr("xlink:href", "/img/minimap.png")
           .attr("width", 700)
           .attr("height", 700)
 
+        // this piece is a little funky. Essentially we're saying:
+        //   1. Get all objects with class 'ward'
+        //   2. Take the following data (our csv file)
+        //   3. If there are data entries in data that aren't already in the DOM,
+        //      create new 'rect' objects for each of them.
+        //
+        //  The subsequent lines are all about mapping characteristics of the
+        //  svg object (eg width, height, fill, stroke) onto the raw data.
+        //  In general, this is how all the configuration happens. You just
+        //  pass in functions that, given a data point, return the appropriate
+        //  value.
         svg.selectAll(".ward")
           .data(data)
         .enter().append("rect")
-          .attr("class", "sale")
+          .attr("class", "ward")
+            // see these x and y functions? This is how we actually use the
+            // linear scales created earlier. These functions take some value
+            // in domain, and map it to the appropriate value in range.
           .attr("x", function(w) { return x(parseInt(w["X Pos."])); })
-          .attr("width", 10)
           .attr("y", function(w) { return y(parseInt(w["Y Pos."])); })
           .attr("height", 10)
+          .attr("width", 10)
           .style("fill", function(w) {
             return w["Type"]=="Observer" ? color(w) : 'transparent'}
           )
