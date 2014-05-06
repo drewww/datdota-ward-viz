@@ -57,6 +57,12 @@
           return w["Side"]=='Dire' ? 'red' : 'green';
         };
 
+
+        svg.append("image")
+          .attr("xlink:href", "/img/minimap.png")
+          .attr("width", 700)
+          .attr("height", 700)
+
         svg.selectAll(".ward")
           .data(data)
         .enter().append("rect")
