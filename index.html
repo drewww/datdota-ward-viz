@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Meerkit Brand Sales Visualization</title>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+    <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+
+    <script type="text/javascript" charset="utf-8">
+      var data;
+
+      var margin = {top:50, right:50, bottom:50, left:50};
+      var width = 800 - margin.left - margin.right,
+          height = 800 - margin.top - margin.bottom;
+
+      d3.csv("/data/match-617956329.csv", function(d) {
+        data = d;
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+        // var domain = [d3.min(data, function(d) {return d.start}),
+        //               d3.max(data, function(d) {return d.end})];
+        //     domain = _.map(domain, function(d) {return new Date(d)});
+        //
+        // var x = d3.time.scale()
+        //           .domain(domain)
+        //           .range([0, width])
+        //
+        // var xAxis = d3.svg.axis()
+        //               .scale(x)
+        //               .ticks(12)
+        //               .orient("bottom");
+        //
+        // svg.append("g")
+        //     .attr("class", "x axis")
+        //     .attr("transform", "translate(0," + height + ")")
+        //     .call(xAxis)
+        //   .selectAll("text")
+        //     .attr("y", 6)
+        //     .attr("x", 6)
+        //     .style("text-anchor", "start");
+        //
+        // // var color = d3.scale.linear()
+        // //               .range([d3.hsl(100, 1.0, 1.0), d3.hsl(100, 1.0, 1.0)])
+        // //               .domain([0, 100]);
+        //
+        // var alpha = d3.scale.linear()
+        //               .range([0, 1])
+        //               .domain([30, 100]);
+        //
+        // var tip = d3.tip()
+        //   .attr('class', 'd3-tip')
+        //   .offset([-10, 0])
+        //   .html(function(s) {
+        //     return s.percent + "<br>" + _.map(s.events, function(e) { return e.subject}).join("<br>");
+        //   });
+        //
+        // svg.call(tip);
+        //
+        // svg.selectAll(".sale")
+        //   .data(data)
+        // .enter().append("rect")
+        //   .filter(function(s) { return s.keywords.length==0; })
+        //   .filter(function(s) { return (s.end - s.start) > 60*60*24*1000; })
+        //   .attr("class", "sale")
+        //   .attr("x", function(s) { return x(s.start); })
+        //   .attr("width", function(s) { return x(s.end) - x(s.start);})
+        //   .attr("y", 0)
+        //   .attr("height", 40)
+        //   .style("fill", 'green')
+        //   .style("fill-opacity", function(s) { return alpha(parseInt(s.percent))} )
+        //   .on('mouseover', tip.show)
+        //   .on('mouseout', tip.hide);
+
+
+      });
+    </script>
+
+    <style type="text/css" media="screen">
+
+      text {
+        font-family: helvetica;
+        font: 10px;
+      }
+
+      .axis line,
+      .axis path {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+
+
+    </style>
+  </head>
+  <body>
+
+  </body>
+</html>
