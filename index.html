@@ -53,38 +53,6 @@
             .attr("transform", "translate(0,0)")
             .call(yAxis);
 
-        //
-        // var xAxis = d3.svg.axis()
-        //               .scale(x)
-        //               .ticks(12)
-        //               .orient("bottom");
-        //
-        // svg.append("g")
-        //     .attr("class", "x axis")
-        //     .attr("transform", "translate(0," + height + ")")
-        //     .call(xAxis)
-        //   .selectAll("text")
-        //     .attr("y", 6)
-        //     .attr("x", 6)
-        //     .style("text-anchor", "start");
-        //
-        // // var color = d3.scale.linear()
-        // //               .range([d3.hsl(100, 1.0, 1.0), d3.hsl(100, 1.0, 1.0)])
-        // //               .domain([0, 100]);
-        //
-        // var alpha = d3.scale.linear()
-        //               .range([0, 1])
-        //               .domain([30, 100]);
-        //
-        // var tip = d3.tip()
-        //   .attr('class', 'd3-tip')
-        //   .offset([-10, 0])
-        //   .html(function(s) {
-        //     return s.percent + "<br>" + _.map(s.events, function(e) { return e.subject}).join("<br>");
-        //   });
-        //
-        // svg.call(tip);
-        //
         svg.selectAll(".ward")
           .data(data)
         .enter().append("rect")
@@ -93,7 +61,7 @@
           .attr("width", 5)
           .attr("y", function(w) { return y(parseInt(w["Y Pos."])); })
           .attr("height", 5)
-          .style("fill", 'green');
+          .style("fill", function(w) { return w["Side"]=='Dire' ? 'red' : 'green'});
       });
     </script>
 
