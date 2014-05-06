@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Meerkit Brand Sales Visualization</title>
+    <title>Datdota Ward Example</title>
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
@@ -23,14 +23,36 @@
           .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+        // not totally sure about the domain here. Looking at the example page,
+        // http://www.datdota.com/match.php?q=617956329&p=wards
+        // it's certainly 0 based but not sure how far up it goes. 200 seems
+        // a little low but I'm not sure.
+        var x = d3.scale.linear()
+                  .domain([60, 200])
+                  .range([0, 700]);
 
-        // var domain = [d3.min(data, function(d) {return d.start}),
-        //               d3.max(data, function(d) {return d.end})];
-        //     domain = _.map(domain, function(d) {return new Date(d)});
-        //
-        // var x = d3.time.scale()
-        //           .domain(domain)
-        //           .range([0, width])
+        var y = d3.scale.linear()
+                  .domain([60, 200])
+                  .range([700, 0])
+
+        var xAxis = d3.svg.axis()
+                      .scale(x)
+                      .orient("bottom");
+
+        var yAxis = d3.svg.axis()
+                      .scale(y)
+                      .orient("left");
+
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+
+        svg.append("g")
+            .attr("class", "y axis")
+            .attr("transform", "translate(0,0)")
+            .call(yAxis);
+
         //
         // var xAxis = d3.svg.axis()
         //               .scale(x)
@@ -63,22 +85,15 @@
         //
         // svg.call(tip);
         //
-        // svg.selectAll(".sale")
-        //   .data(data)
-        // .enter().append("rect")
-        //   .filter(function(s) { return s.keywords.length==0; })
-        //   .filter(function(s) { return (s.end - s.start) > 60*60*24*1000; })
-        //   .attr("class", "sale")
-        //   .attr("x", function(s) { return x(s.start); })
-        //   .attr("width", function(s) { return x(s.end) - x(s.start);})
-        //   .attr("y", 0)
-        //   .attr("height", 40)
-        //   .style("fill", 'green')
-        //   .style("fill-opacity", function(s) { return alpha(parseInt(s.percent))} )
-        //   .on('mouseover', tip.show)
-        //   .on('mouseout', tip.hide);
-
-
+        svg.selectAll(".ward")
+          .data(data)
+        .enter().append("rect")
+          .attr("class", "sale")
+          .attr("x", function(w) { return x(parseInt(w["X Pos."])); })
+          .attr("width", 5)
+          .attr("y", function(w) { return y(parseInt(w["Y Pos."])); })
+          .attr("height", 5)
+          .style("fill", 'green');
       });
     </script>
 
